@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beton & Estrich Rechner | Baustellen-Kalkulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div>
+        <h1>Beton & Estrich Rechner</h1>
+        <p class="subtitle">Schnelle Mengenberechnung für Sackware, Fahrmischer & Pumpe</p>
+      </div>
+    </header>
+
+    <!-- SCHRITT 1: Bauteil & Maße -->
+    <section class="card">
+      <h2>1. Was wird betoniert?</h2>
+      <div class="tabs" id="shapeTabs">
+        <button type="button" class="tab active" data-shape="slab">Platte / Fundament</button>
+        <button type="button" class="tab" data-shape="column">Punktfundament / Loch</button>
+        <button type="button" class="tab" data-shape="bagsLeft">Säcke vorhanden (Rückwärts)</button>
+      </div>
+
+      <!-- Eingaben für Platte / Streifenfundament -->
+      <div id="inputsSlab" class="grid-3">
+        <div class="field">
+          <label for="length">Länge (m)</label>
+          <input type="number" id="length" step="0.01" min="0" value="2.50" />
+        </div>
+        <div class="field">
+          <label for="width">Breite (m)</label>
+          <input type="number" id="width" step="0.01" min="0" value="0.40" />
+        </div>
+        <div class="field">
+          <label for="heightCm">Stärke / Tiefe (cm)</label>
+          <input type="number" id="heightCm" step="0.5" min="0" value="40" />
+        </div>
+      </div>
+
+      <!-- Eingaben für Punktfundament / Zylinder -->
+      <div id="inputsColumn" class="grid-3 hidden">
+        <div class="field">
+          <label for="diameterCm">Durchmesser (cm)</label>
+          <input type="number" id="diameterCm" step="1" min="0" value="30" />
+        </div>
+        <div class="field">
+          <label for="depthCm">Tiefe (cm)</label>
+          <input type="number" id="depthCm" step="1" min="0" value="80" />
+        </div>
+        <div class="field">
+          <label for="holesCount">Anzahl Löcher (Stk.)</label>
+          <input type="number" id="holesCount" step="1" min="1" value="6" />
+        </div>
+      </div>
+
+      <!-- Eingaben für Rückwärts-Rechner -->
+      <div id="inputsBagsLeft" class="grid-2 hidden">
+        <div class="field">
+          <label for="availableBags">Vorhandene Säcke (Stk.)</label>
+          <input type="number" id="availableBags" step="1" min="1" value="20" />
+        </div>
+        <div class="field">
+          <label for="targetThicknessCm">Gewünschte Stärke (cm)</label>
+          <input type="number" id="targetThicknessCm" step="0.5" min="0.5" value="5" />
+        </div>
+      </div>
+
+      <!-- Reserve / Verschnitt -->
+      <div class="reserve-row" id="reserveRow">
+        <label for="reserve">Reserve für Unebenheiten & Verlust: <strong id="reserveVal">10%</strong></label>
+        <input type="range" id="reserve" min="0" max="25" step="5" value="10" />
+      </div>
+    </section>
+
+    <!-- SCHRITT 2: Lieferart / Mischung -->
+    <section class="card">
+      <h2>2. Wie wird gemischt / geliefert?</h2>
+      <div class="tabs" id="modeTabs">
+        <button type="button" class="tab active" data-mode="bags">Sackware (Estrich-Beton)</button>
+        <button type="button" class="tab" data-mode="truck">Fahrmischer / Pumpe</button>
+        <button type="button" class="tab" data-mode="mixer">Betonmischer (1:4)</button>
+      </div>
+
+      <!-- Optionen für Sackware -->
+      <div id="modeBags" class="grid-2">
+        <div class="field">
+          <label for="bagWeight">Sackgewicht</label>
+          <select id="bagWeight">
+            <option value="25" selected>25 kg (Standard Estrich-Beton)</option>
+            <option value="30">30 kg</option>
+            <option value="40">40 kg</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="yieldPerKg">Ergiebigkeit (Liter Frischbeton / 1 kg)</label>
+          <input type="number" id="yieldPerKg" step="0.01" min="0.3" max="0.8" value="0.50" />
+        </div>
+      </div>
+
+      <!-- Optionen für Fahrmischer / Pumpe -->
+      <div id="modeTruck" class="grid-2 hidden">
+        <div class="field">
+          <label for="usePump">Betonpumpe erforderlich?</label>
+          <select id="usePump">
+            <option value="0">Nein (direkt über Rutsche)</option>
+            <option value="0.3">Ja – kleine Pumpe (+0,30 m³ Restmenge)</option>
+            <option value="0.5">Ja – große Pumpe (+0,50 m³ Restmenge)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="concreteGrade">Betonfestigkeitsklasse</label>
+          <select id="concreteGrade">
+            <option value="C20/25">C20/25 (Fundamente / Bodenplatten)</option>
+            <option value="C25/30">C25/30 (Stahlbeton / tragend)</option>
+            <option value="C12/15">C12/15 (Sauberkeitsschicht)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Info für Baustellenmischung -->
+      <div id="modeMixer" class="info-box hidden">
+        Standard-Baustellenmischung (Verhältnis <strong>1 Teil Zement : 4 Teile Sand/Kies</strong>) — ca. 320 kg Zement und 1.900 kg Betonkies (0–16 / 0–32) pro 1 m³.
+      </div>
+    </section>
+
+    <!-- ERGEBNIS -->
+    <section class="card result-card">
+      <div class="result-top">
+        <div>
+          <span class="badge" id="resultBadge">BENÖTIGTER BETON (INKL. RESERVE)</span>
+          <div class="big-number" id="totalVolume">0,44 m³</div>
+          <div class="sub-number" id="netVolume">Nettovolumen: 0,40 m³ + 10% Reserve</div>
+        </div>
+      </div>
+
+      <div id="resultDetails" class="details-list">
+        <!-- Wird automatisch durch JavaScript gefüllt -->
+      </div>
+
+      <div id="warningBox" class="warning hidden"></div>
+
+      <div class="field" style="margin-bottom: 12px;">
+        <label for="waPhone">WhatsApp Nummer (optional, z.B. 491701234567)</label>
+        <input type="tel" id="waPhone" placeholder="491701234567" />
+      </div>
+
+      <button type="button" id="copyBtn" class="copy-btn">Bestellliste für WhatsApp / Baustoffhandel kopieren</button>
+      <button type="button" id="imgBtn" class="img-btn" style="margin-top: 8px; width: 100%; background: #fbbf24; color: #111827; border: none; padding: 13px; border-radius: 10px; font-size: 0.98rem; font-weight: 800; cursor: pointer;">
+        Bild mit Daten erstellen & teilen (WhatsApp)
+      </button>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
